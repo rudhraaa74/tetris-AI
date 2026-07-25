@@ -7,6 +7,7 @@
 #include "engine/Evaluator.h"
 #include <vector>
 #include <iostream>
+#include <chrono>
 
 namespace py = pybind11;
 using namespace tetris;
@@ -86,6 +87,7 @@ PYBIND11_MODULE(tetris_core, m) {
         .def("getScore", &Game::getScore)
         .def("getLevel", &Game::getLevel)
         .def("getLines", &Game::getLines)
+        .def("getTetrises", &Game::getTetrises)
         .def("getActivePieceType", &Game::getActivePieceType)
         .def("getNextPieceType", &Game::getNextPieceType)
         .def("getActiveX", &Game::getActiveX)
@@ -136,12 +138,13 @@ PYBIND11_MODULE(tetris_core, m) {
         return Features::extract(sim_board, y, lines_cleared, piece_cells_cleared);
     });
 
-    m.def("run_seeded_game_depth2", [](int seed, const std::array<double, 9>& weights, int level, int max_moves) {
+    m.def("run_seeded_game_depth2", [](int seed, const std::array<double, 9>& weights, int level, int max_moves, int core_id) {
         Game game(level, seed);
         
         MoveSearch searcher;
         int moves = 0;
         int last_log_lines = 0;
+        auto start_time = std::chrono::steady_clock::now();
         
         while (game.getState() != GameState::GAME_OVER && (max_moves < 0 || moves < max_moves)) {
             if (game.getState() == GameState::ENTRY_DELAY || game.getState() == GameState::LINE_CLEAR) {
@@ -177,10 +180,20 @@ PYBIND11_MODULE(tetris_core, m) {
             
             if (game.getLines() - last_log_lines >= 1000) {
                 last_log_lines = (game.getLines() / 1000) * 1000;
-                std::cout << "[Depth-2 C++] Cleared " << last_log_lines << " lines so far..." << std::endl;
+                auto now = std::chrono::steady_clock::now();
+                std::chrono::duration<double> diff = now - start_time;
+                double speed = moves / diff.count();
+                std::cout << "[Core " << core_id << "] Seed " << seed 
+                          << " | Lines: " << last_log_lines 
+                          << " | Score: " << game.getScore() 
+                          << " | Speed: " << (int)speed << " moves/sec" << std::endl;
             }
         }
         
         return py::make_tuple(game.getScore(), game.getLines(), game.getTetrises(), moves);
-    }, py::arg("seed"), py::arg("weights"), py::arg("level"), py::arg("max_moves") = -1);
+    }, py::arg("seed"), py::arg("weights"), py::arg("level"), py::arg("max_moves") = -1, py::arg("core_id") = 0);
+
+    m.def("get_best_placement_depth2", [](const Game& game, const std::array<double, 9>& weights, MoveSearch& searcher) {
+        return Evaluator::getBestPlacementDepth2(game, weights, searcher);
+    });
 }

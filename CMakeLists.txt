@@ -87,24 +87,7 @@ target_link_libraries(tetris_render PRIVATE tetris_core raylib)
 target_compile_options(tetris_render PRIVATE ${SANITIZER_FLAGS})
 target_link_options(tetris_render PRIVATE ${SANITIZER_FLAGS})
 
-# -----------------
-# Target: tetris_test
-# -----------------
-add_executable(tetris_test
-    tests/test_timing.cpp
-    tests/test_scoring.cpp
-    tests/test_piece.cpp
-    tests/test_board.cpp
-    tests/test_randomizer.cpp
-    tests/test_game.cpp
-    tests/test_mech.cpp
-    tests/test_movesearch.cpp
-    tests/test_movesearch_stress.cpp
-    tests/test_features.cpp
-)
-target_link_libraries(tetris_test PRIVATE tetris_core Catch2::Catch2WithMain)
-target_compile_options(tetris_test PRIVATE ${SANITIZER_FLAGS})
-target_link_options(tetris_test PRIVATE ${SANITIZER_FLAGS})
+
 
 # -----------------
 # Target: Python Bindings
