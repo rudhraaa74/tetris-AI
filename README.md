@@ -1,10 +1,10 @@
-# Autonomous High-Performance Tetris AI Engine 🧩⚡
+# Autonomous High-Performance Tetris AI Engine 
 
 ![Tetris AI Demo](demo.gif)
 
 A C++20 and Python hybrid Tetris AI engine utilizing 2-piece lookahead (Depth-2) search, 9 BCTS heuristic features, and CMA-ES evolutionary optimization. Engineered for hardware efficiency on Apple Silicon, achieving over **3,000,000,000+ NES Points** and **29,500+ lines cleared** in an uncapped, immortal benchmark run (triggering a 32-bit signed integer score overflow past 2.14B).
 
-## 🌟 Highlights & Achievements
+##  Highlights & Achievements
 
 - **3B+ NES Points & 29,500+ Lines (32-Bit Score Overflow)**: Cleared in an uncapped, immortal benchmark run without topping out once—routinely overflowing the 32-bit signed integer score limit.
 - **Sub-100ms Decision Latency**: Delivers ~75ms complete Depth-2 move decisions (~100 microseconds per board evaluation) at 9,300+ nodes/sec per core with zero heap allocations in the inner search loop.
@@ -15,7 +15,7 @@ A C++20 and Python hybrid Tetris AI engine utilizing 2-piece lookahead (Depth-2)
 
 ---
 
-## 🏗️ System Architecture
+##  System Architecture
 
 The AI is built as a clean, multi-tier hybrid architecture:
 
@@ -36,7 +36,7 @@ The AI is built as a clean, multi-tier hybrid architecture:
 
 ---
 
-## 📈 CMA-ES Evolutionary Training Curve
+##  CMA-ES Evolutionary Training Curve
 
 ![CMA-ES Training Curve](training_curve.png)
 
@@ -44,7 +44,7 @@ The AI is built as a clean, multi-tier hybrid architecture:
 
 ---
 
-## 🧠 Depth-2 Lookahead & BCTS Feature Weights
+##  Depth-2 Lookahead & BCTS Feature Weights
 
 While Depth-1 evaluates only ~30 terminal states, Depth-2 evaluates every valid placement for the current piece *plus* every valid placement for the upcoming piece (approx 900 states). This intentional depth eliminates "S/Z droughts" by actively creating uneven surfaces if the engine detects the *next* piece perfectly resolves the geometry.
 
@@ -62,7 +62,7 @@ While Depth-1 evaluates only ~30 terminal states, Depth-2 evaluates every valid 
 
 ---
 
-## 📁 Repository Structure
+##  Repository Structure
 
 ```text
 ├── engine/                   # Core C++ mechanics, MoveSearch, and BCTS evaluator
@@ -75,7 +75,7 @@ While Depth-1 evaluates only ~30 terminal states, Depth-2 evaluates every valid 
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### 1. Build the Engine
 
@@ -108,5 +108,5 @@ Launch the parallel uncapped benchmark script to evaluate real-time search throu
 python3 training/run_final_benchmark.py
 ```
 
-## 📜 License
+##  License
 Distributed under the MIT License. See `LICENSE` for more information.
