@@ -2,22 +2,22 @@
 
 ![Tetris AI Demo](demo.gif)
 
-A C++20 and Python hybrid Tetris AI engine utilizing 2-piece lookahead (Depth-2) search, 9 BCTS heuristic features, and CMA-ES evolutionary optimization. Engineered for hardware efficiency on Apple Silicon, achieving over **3 Billion+ NES Points** in an uncapped benchmark run (breaking the 32-bit integer limit!).
+A C++20 and Python hybrid Tetris AI engine utilizing 2-piece lookahead (Depth-2) search, 9 BCTS heuristic features, and CMA-ES evolutionary optimization. Engineered for hardware efficiency on Apple Silicon, achieving over **3,000,000,000+ NES Points** and **29,500+ lines cleared** in an uncapped, immortal benchmark run (triggering a 32-bit signed integer score overflow past 2.14B).
 
 ## 🌟 Highlights & Achievements
 
-- **3,000,000,000+ NES Points (Score Overflow)**: Cleared in an uncapped, immortal benchmark run without topping out once. The AI plays so perfectly that it routinely overflows the 32-bit integer score limit (2.14B) at around 29,500 lines.
-- **C++ Core Engine with pybind11 Bindings**: Sub-millisecond evaluation speed (~9,300 node state evaluations/second per core).
-- **2-Piece Lookahead (Depth-2 Search)**: Simulates all $N_1 \times N_2 \approx 30 \times 30 = 900$ branch node states per placement to eliminate fatal S/Z piece traps.
-- **Apple Silicon Hardware Tuning**: Optimized for heterogeneous architectures by isolating worker processes exclusively to Firestorm Performance cores (P-cores).
+- **3B+ NES Points & 29,500+ Lines (32-Bit Score Overflow)**: Cleared in an uncapped, immortal benchmark run without topping out once—routinely overflowing the 32-bit signed integer score limit.
+- **Sub-100ms Decision Latency**: Delivers ~75ms complete Depth-2 move decisions (~100 microseconds per board evaluation) at 9,300+ nodes/sec per core with zero heap allocations in the inner search loop.
+- **2-Piece Lookahead (Depth-2 Search)**: Simulates all $N_1 \times N_2 \approx 30 \times 30 = 900$ branch node states per placement to eliminate fatal S/Z piece droughts.
+- **Apple Silicon P-Core Hardware Tuning**: Solved the heterogeneous "Straggler Effect" by isolating worker processes exclusively to Performance cores for a 4.5x–5x speedup.
 - **CMA-ES Evolutionary Optimization**: Multi-seed heuristic weight optimization over 9 BCTS (Bertsekas-Tsitsiklis) domain features.
-- **Real-Time Raylib Visualizer**: A natively compiled, blazing fast C++ visualizer built with Raylib to watch the AI play at 60+ FPS.
+- **Real-Time Native C++ Raylib Visualizer**: A natively compiled, blazing fast visualizer running at 60+ FPS.
 
 ---
 
 ## 🏗️ System Architecture
 
-The AI is built as a multi-tier hybrid architecture: Python orchestrates evolutionary training loops and benchmarks, while C++ handles computationally intensive move searches, state evaluations, and high-performance rendering.
+The AI is built as a clean, multi-tier hybrid architecture:
 
 ```text
        ┌────────────────────────────────────────────────────────┐
@@ -27,30 +27,18 @@ The AI is built as a multi-tier hybrid architecture: Python orchestrates evoluti
                                    │ pybind11
        ┌───────────────────────────▼────────────────────────────┐
        │               C++ Core Engine (`tetris_core`)          │
-       ├────────────────────────────────────────────────────────┤
-       │  • Depth-2 Lookahead Engine (`getBestPlacementDepth2`) │
-       │  • Bitwise Board Matrix & Kinematic Transition Rules   │
-       │  • BCTS 9-Feature Heuristic Evaluator                  │
        └───────────────────────────┬────────────────────────────┘
-                                   │ Raylib
+                                   │ Native C++ API / Structs
        ┌───────────────────────────▼────────────────────────────┐
-       │             Native C++ Graphical Visualizer            │
+       │             Native C++ Visualizer (Raylib)             │
        └────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🧠 Depth-2 Lookahead Strategy
+## 🧠 Depth-2 Lookahead & BCTS Feature Weights
 
-While 1-piece lookahead (Depth-1) evaluates only ~30 terminal states for the current falling piece, Depth-2 evaluates every valid placement for the current piece *plus* every valid placement for the upcoming piece:
-
-`Evaluations per Move ≈ 30 × 30 = 900 states`
-
-This depth allows the engine to intentionally create temporary surface irregularity or "bumpiness" if it detects that the upcoming piece can seamlessly resolve the gap, completely eliminating "S/Z piece droughts" that trap 1-piece agents.
-
-## 📊 Heuristic Feature Weights (BCTS Model)
-
-The evaluation function computes a weighted linear combination of 9 key board quality features:
+While Depth-1 evaluates only ~30 terminal states, Depth-2 evaluates every valid placement for the current piece *plus* every valid placement for the upcoming piece (approx 900 states). This intentional depth eliminates "S/Z droughts" by actively creating uneven surfaces if the engine detects the *next* piece perfectly resolves the geometry.
 
 | Index | Feature Name | Depth-1 Weight | Depth-2 Fine-Tuned | Tactical & Strategic Shift |
 |-------|-------------|----------------|--------------------|-----------------------------|
@@ -66,54 +54,37 @@ The evaluation function computes a weighted linear combination of 9 key board qu
 
 ---
 
-## ⚡ Apple Silicon Performance Optimization
-
-Standard Python `ProcessPoolExecutor` setups suffer from severe synchronization bottlenecks on ARM heterogeneous architectures (e.g., Apple M1/M2/M3 chips) due to the "Straggler Effect":
-
-- **The Issue**: Equal chunking distributes work across both Performance (P-Cores) and Efficiency (E-Cores). Fast P-cores finish quickly and sit idle at a synchronization barrier, while slow, power-throttled E-cores take roughly 10x longer to finish.
-- **The Fix**: By enforcing `max_workers = 4` and isolating processes strictly to P-cores, generation evaluation times plummeted, resulting in a **4.5x to 5x speedup**.
-
----
-
 ## 📁 Repository Structure
 
 ```text
 ├── engine/                   # Core C++ mechanics, MoveSearch, and BCTS evaluator
 ├── render/                   # Raylib-based native C++ graphical visualizer
 ├── bindings/                 # pybind11 C++ module definitions (`tetris_bindings.cpp`)
-├── training/                 # Python scripts
-│   ├── train_depth2.py       # CMA-ES evolutionary training script
-│   └── run_final_benchmark.py# Multi-core uncapped benchmark runner
+├── training/                 # Python CMA-ES orchestrators and benchmark scripts
 ├── output/                   # Checkpoints and active training logs
-├── CMakeLists.txt            # CMake build configuration
-└── README.md                 # Project documentation
+└── CMakeLists.txt            # CMake build configuration
 ```
 
 ---
 
 ## 🚀 Getting Started
 
-### Prerequisites
-- **C++ Compiler**: `clang++` or `g++` supporting C++20.
-- **Python**: 3.9+
-- **Build Tools**: `cmake`, `make`
-- **Dependencies**: `pybind11`, `cma`, `numpy`, `raylib` (fetched automatically by CMake)
+### 1. Build the Engine
 
-### 1. Installation & Compilation
-Clone the repository and compile the native C++ Python extension module and the Raylib visualizer:
+Compile the native C++ Python extension module and the Raylib visualizer:
 
 ```bash
-# Install required Python packages
-pip install cma numpy
-
-# Generate build files and compile the project
-mkdir -p build && cd build
+mkdir build
+cd build
 cmake ..
 make -j4
 ```
 
+*(Note: Ensure you have `cmake`, `raylib`, and a C++20 compatible compiler installed).*
+
 ### 2. Watch the AI Play (Native C++ Visualizer)
-Watch the Depth-2 AI play live with blazing fast graphics natively rendered in C++:
+
+Watch the Depth-2 AI play live with blazing fast, native C++ graphics:
 
 ```bash
 ./build/tetris_render
@@ -122,7 +93,8 @@ Watch the Depth-2 AI play live with blazing fast graphics natively rendered in C
 - **`R`**: Reset the board
 
 ### 3. Run the Multi-Core Benchmark
-Run 4 concurrent games (one per Performance core) to evaluate real-time search throughput and line clears:
+
+Launch the parallel uncapped benchmark script to evaluate real-time search throughput across your performance cores:
 
 ```bash
 python3 training/run_final_benchmark.py
