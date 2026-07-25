@@ -7,6 +7,7 @@ A C++20 and Python hybrid Tetris AI engine utilizing 2-piece lookahead (Depth-2)
 ##  Highlights & Achievements
 
 - **5B+ NES Points & 50,000+ Lines (Effectively Infinite Gameplay)**: The benchmark was manually terminated after clearing 50,000 lines without topping out once. The AI plays so perfectly that it effortlessly laps the 32-bit signed integer score limit (2.14B).
+- **100% Authentic NES Mechanics**: Perfectly replicates original NES Tetris engine mechanics, including true Nintendo rotation systems (NRS), DAS charging, frame-accurate line clear delays, and piece entry delays (ARE).
 - **Sub-100ms Decision Latency**: Delivers ~75ms complete Depth-2 move decisions (~100 microseconds per board evaluation) at 9,300+ nodes/sec per core with zero heap allocations in the inner search loop.
 - **2-Piece Lookahead (Depth-2 Search)**: Simulates all $N_1 \times N_2 \approx 30 \times 30 = 900$ branch node states per placement to eliminate fatal S/Z piece droughts.
 - **Realistic BFS Placement Pathfinding**: Uses a lightweight Breadth-First Search (BFS) to map all physically reachable board landing spots—enabling valid slides, tucks, and spins while preventing illegal piece "teleportation."
