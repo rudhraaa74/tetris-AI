@@ -36,6 +36,14 @@ The AI is built as a clean, multi-tier hybrid architecture:
 
 ---
 
+## 📈 CMA-ES Evolutionary Training Curve
+
+![CMA-ES Training Curve](training_curve.png)
+
+*The evolutionary optimization algorithm fine-tuning the 9 heuristic weights over 15 generations, resulting in an exponential increase in median fitness.*
+
+---
+
 ## 🧠 Depth-2 Lookahead & BCTS Feature Weights
 
 While Depth-1 evaluates only ~30 terminal states, Depth-2 evaluates every valid placement for the current piece *plus* every valid placement for the upcoming piece (approx 900 states). This intentional depth eliminates "S/Z droughts" by actively creating uneven surfaces if the engine detects the *next* piece perfectly resolves the geometry.
