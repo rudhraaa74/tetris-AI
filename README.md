@@ -1,10 +1,13 @@
 # Autonomous High-Performance Tetris AI Engine
 
 <div align="center">
-  <img src="https://img.shields.io/badge/C%2B%2B-20-blue.svg?logo=c%2B%2B&style=for-the-badge" alt="C++20 Badge">
-  <img src="https://img.shields.io/badge/Python-3.9%2B-FFD43B.svg?logo=python&logoColor=blue&style=for-the-badge" alt="Python Badge">
-  <img src="https://img.shields.io/badge/CMake-Build-064F8C.svg?logo=cmake&style=for-the-badge" alt="CMake Badge">
-  <img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="MIT License Badge">
+  <img src="https://img.shields.io/badge/Python-3.9+-1f77b4.svg" alt="Python Badge">
+  <img src="https://img.shields.io/badge/C++-20-00599C.svg" alt="C++20 Badge">
+  <img src="https://img.shields.io/badge/pybind11-2.13-17a2b8.svg" alt="pybind11 Badge">
+  <img src="https://img.shields.io/badge/Graphics-Raylib-dc3545.svg" alt="Raylib Badge">
+  <img src="https://img.shields.io/badge/Algorithm-CMA--ES-ff7f0e.svg" alt="CMA-ES Badge">
+  <img src="https://img.shields.io/badge/Build-CMake-064F8C.svg" alt="CMake Badge">
+  <img src="https://img.shields.io/badge/License-MIT-d4af37.svg" alt="MIT License Badge">
 </div>
 
 <br>
